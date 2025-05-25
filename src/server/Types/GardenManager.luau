@@ -1,3 +1,6 @@
+local server = game:GetService("ServerScriptService").Server
+local plantTypes = require(server.Types.Plant)
+
 export type GardenManagerImpl = {
     __index: GardenManagerImpl;
     New: (plot: Model) -> (GardenManager);
@@ -8,7 +11,7 @@ export type GardenManagerImpl = {
 export type GardenManager = typeof(setmetatable({} :: {
     plot: Model;
     owner: Player?;
-    seeds: {any};
+    plants: {plantTypes.Plant & any};
     plantSeedConnection: RBXScriptConnection?;
 }, {} :: GardenManagerImpl))
 

@@ -1,11 +1,15 @@
 --!strict
 local server = game.ServerScriptService.Server
+
 local types = require(server.Types.GardenManager)
+local plantTypes = require(server.Types.Plant)
+
+local remotes = game.ReplicatedStorage:WaitForChild("Remotes")
+local plantsFolder = server.Modules.Plants
 
 local gardenUtils = require(server.Modules.Utils.Garden)
 local seedUtils = require(server.Modules.Utils.Seed)
-
-local remotes = game.ReplicatedStorage:WaitForChild("Remotes")
+local generalUtils = require(server.Modules.Utils.General)
 
 local manager = {} :: types.GardenManagerImpl
 manager.__index = manager
@@ -15,33 +19,50 @@ function manager:SetOwner(player)
 end
 
 function manager:PlantSeed(seedType, target)
+	if not self.owner then
+		return
+	end
+
 	if not seedUtils.VerifySeedTypeExists(seedType) then
 		warn(`Seed type {seedType} does not exist.`)
 		return
 	end
 
+	if not plantsFolder:FindFirstChild(seedType) then
+		warn(`Cannot find {seedType} in plants folder.`)
+		return
+	end
+
+	local seedTool = seedUtils.FindSeedByTypeInPlayerInventory(seedType, self.owner)
+	if not seedTool or seedTool:GetAttribute("Amount") <= 0 then
+		warn("Player doesn't have a SeedTool with the given seedType")
+		return
+	end
+
+	local plantPlot = nil
 	for _, plot in pairs((self.plot:FindFirstChild("Plots") :: Folder):GetChildren()) do
-		if not gardenUtils.ValidateTarget(plot :: Model, target) then
-			warn("Seed is outside of the placeable area.")
-			return
+		if gardenUtils.ValidateTarget(plot :: Model, target) then
+			plantPlot = plot
+			break
 		end
 	end
 
-	local testVisual = Instance.new("Part")
-	testVisual.Name = "SeedVisual"
-	testVisual.CanCollide = false
-	testVisual.Size = Vector3.new(1, 1, 1)
-	testVisual.Color = Color3.fromRGB(255, 255, 0)
-	testVisual.Anchored = true
-	testVisual.Position = target.Position
-    testVisual.Transparency = .8
-	testVisual.Parent = workspace
+	if not plantPlot then
+		warn("Seed is outside of the placeable area.")
+		return
+	end
 
-	remotes:FindFirstChild("EffectService"):WaitForChild("RunEffect"):FireAllClients(
-        "Plant", target.Position
-    )
+	local plantModule = (require(plantsFolder:FindFirstChild(seedType)) :: plantTypes.Plant & any).New({
+		plot = self.plot,
+		origin = target.Position,
+		relativeOffset = generalUtils.getOffsetFromPart(target.Position, plantPlot:FindFirstChild("SeedArea") :: Part),
+	})
+	table.insert(self.plants, plantModule)
 
-	print("Planted seed or something")
+	seedUtils.CreateDebugVisual(target.Position)
+	seedTool:SetAttribute("Amount", (seedTool:GetAttribute("Amount") :: number) - 1)
+
+	remotes:FindFirstChild("EffectService"):WaitForChild("RunEffect"):FireAllClients("Plant", target.Position)
 end
 
 function manager.New(plot)
@@ -49,7 +70,7 @@ function manager.New(plot)
 
 	self.plot = plot
 
-	self.seeds = {}
+	self.plants = {}
 	self.owner = nil
 
 	self.plantSeedConnection = remotes

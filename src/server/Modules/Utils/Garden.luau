@@ -2,7 +2,7 @@
 local generalUtil = require(script.Parent.General)
 local util = {}
 
-function util.ValidateTarget(plot: Model, target: CFrame)
+function util.ValidateTarget(plot: Model, target: CFrame): boolean
     --Verifies that the given target CFrame is within plot's seed placeable area
     local seedArea = plot:FindFirstChild("SeedArea") :: BasePart
     if not seedArea then

@@ -12,10 +12,24 @@ local mouse = player:GetMouse()
 
 return function(tool: Tool)
     local seedType = tool:GetAttribute("SeedType") :: string
-    if not seedType or not seedData[seedType] then
+    local seed = seedData[seedType]
+
+    if not seedType or not seed then
         warn(`Failed to load tool {tool.Name} because seedType is missing or doesnt exist.`)
         return
     end
+
+    if not tool:GetAttribute("Amount") then
+        warn(`Failed to load tool {tool.Name} because Amount attribute is missing.`)
+        return
+    end
+
+    tool.Name = `{seed.name} (x{tool:GetAttribute("Amount")})`
+    tool.ToolTip = seed.description
+
+    tool:GetAttributeChangedSignal("Amount"):Connect(function()
+        tool.Name = `{seed.name} (x{tool:GetAttribute("Amount")})`
+    end)
 
     tool.Activated:Connect(function()
         plantSeedRemote:FireServer(seedType, mouse.Hit)
