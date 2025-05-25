@@ -52,6 +52,14 @@ function manager:PlantSeed(seedType, target)
 		return
 	end
 
+	for _, plant in pairs(self.plants) do
+		local distance = (plant.origin - target.Position).Magnitude
+		if distance < 1.5 then
+			warn("Seed is too close to another plant.")
+			return
+		end
+	end
+
 	local plantModule = (require(plantsFolder:FindFirstChild(seedType)) :: plantTypes.Plant & any).New({
 		plot = self.plot,
 		origin = target.Position,
