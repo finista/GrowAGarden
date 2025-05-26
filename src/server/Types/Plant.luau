@@ -19,6 +19,7 @@ export type Plant = typeof(setmetatable({} :: {
     origin: Vector3;
     plot: Folder;
     relativeOffset: Vector3;
+    model: Model?;
     data: any;
     size: number;
     orientationOffset: number;

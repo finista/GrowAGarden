@@ -41,6 +41,31 @@ function util.FindSeedByTypeInPlayerInventory(seedType: string, player: Player):
     return nil
 end
 
+function util.getRandomSizeWithRarity(min: number?, max: number?, lambda: number?): number
+    --[[
+     Generates a random size from 0.8 to 2
+     Where 0.8 is the most common and 2 has around 5% chance of occuring
+
+     Lambda controls how common the max size is. (The bigger lambda is, the rarer max size is)
+    ]]
+
+
+    local _lambda = lambda or 6
+    local xMax = 1
+    
+    local u = math.random()
+    
+    local x = -math.log(1 - u) / _lambda
+
+    x = math.clamp(x, 0, xMax)
+    
+    local minSize = min or 0.8
+    local maxSize = max or 2.0 
+    local size = minSize + (maxSize - minSize) * (x / xMax)
+    
+    return size
+end
+
 function util.CreateDebugVisual(position: Vector3)
     -- Creates a yellow 1x1 brick at the given position
     local testVisual = Instance.new("Part")

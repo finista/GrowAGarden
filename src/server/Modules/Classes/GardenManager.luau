@@ -65,9 +65,8 @@ function manager:PlantSeed(seedType, target)
 		origin = target.Position,
 		relativeOffset = generalUtils.getOffsetFromPart(target.Position, plantPlot:FindFirstChild("SeedArea") :: Part),
 	})
+	
 	table.insert(self.plants, plantModule)
-
-	seedUtils.CreateDebugVisual(target.Position)
 	seedTool:SetAttribute("Amount", (seedTool:GetAttribute("Amount") :: number) - 1)
 
 	remotes:FindFirstChild("EffectService"):WaitForChild("RunEffect"):FireAllClients("Plant", target.Position)

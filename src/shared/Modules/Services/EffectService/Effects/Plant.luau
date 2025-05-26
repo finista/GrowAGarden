@@ -33,7 +33,9 @@ function effect:Run(position: Vector3)
         effectPart, "Transparency",
         0, .3,
         Enum.EasingDirection.Out, Enum.EasingStyle.Sine
-    )
+    );
+
+    (effectPart:WaitForChild("Effect") :: ParticleEmitter):Emit(math.random(5, 10))
 
     task.wait(4)
 

@@ -2,6 +2,8 @@
 local server = game:GetService("ServerScriptService").Server
 local types = require(server.Types.Plant)
 
+local util = require(server.Modules.Utils.Seed)
+
 local plant = {} :: types.PlantImpl
 plant.__index = plant
 
@@ -30,13 +32,14 @@ function plant.New(config)
     self.growthSpeed = 1
     self.isGrowing = true
     
-    self.size = math.random(20, 200) / 100
+    self.size = util.getRandomSizeWithRarity()
     self.orientationOffset = math.random(-360, 360)
 
     self.growthRate = 1
     self.growthDelay = 1
 
     self.seedData = nil
+    self.model = nil
 
     --[[
         Had to use a data property for data storing for any child classes
