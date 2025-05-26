@@ -1,5 +1,5 @@
 local shared = game:GetService("ReplicatedStorage").Shared
-local seedTypes = require(shared.Types.Seed)
+local seedTypes = require(shared.Types.Plant)
 
 export type PlantConfig = {
     plot: Folder;

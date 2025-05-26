@@ -4,12 +4,12 @@ local shared = game:GetService("ReplicatedStorage"):WaitForChild("Shared")
 local enums = require(shared:WaitForChild("Modules"):WaitForChild("Enums"))
 local types = require(shared:WaitForChild("Types"):WaitForChild("Plant"))
 
-local seeds = {} :: {[string]: types.SeedData}
+local fruits = {} :: {[string]: types.PlantData}
 
-seeds.Carrot = {
+fruits.Carrot = {
     name = "Carrot",
     description = "A regular carrot",
-    rarity = enums.SeedRarities.Common
+    rarity = enums.SeedRarities.Rainbow
 }
 
-return seeds
+return fruits

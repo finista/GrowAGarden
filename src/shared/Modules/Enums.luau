@@ -45,6 +45,13 @@ enums.SeedRarities = {
             return hsvToRgb(hue)
         end;
     }
-} :: {[string]: types.SeedRarity}
+} :: {[string]: types.Rarity}
+
+enums.FruitTypes = {
+    Common = {
+        name = "Common",
+        color = Color3.fromRGB(0, 89, 255)
+    };
+}
 
 return enums

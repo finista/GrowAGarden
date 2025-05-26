@@ -1,4 +1,4 @@
-export type SeedRarity = {
+export type Rarity = {
     name: string,
     color: Color3 | () -> (Color3),
 }
