@@ -21,6 +21,7 @@ function customPrompt:HoldEnded(_)
 end
 
 function customPrompt:Triggered(_)
+    self.UI:WaitForChild("Click"):Play()
     tweenModule.MultiTween(
         self.UI, "Size",
         UDim2.new(2.8, 0, 0.9, 0), .05,
@@ -68,7 +69,6 @@ function customPrompt.New(prompt, platform)
     self.prompt = prompt
 
     self.UI.Size = UDim2.new(0, 0, 0, 0)
-    self.UI.MaxDistance = prompt.MaxActivationDistance + 10
 
     self.main:WaitForChild("Plant").Text = fruitData.name
     self.main:WaitForChild("PromptDescription").Text = prompt.ActionText
@@ -106,6 +106,7 @@ function customPrompt.New(prompt, platform)
     self.UI.Adornee = prompt.Parent
 
     self.UI.Enabled = true
+    self.UI:WaitForChild("Show"):Play()
 
     tweenModule.MultiTween(
         self.UI, "Size",
