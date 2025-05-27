@@ -9,6 +9,7 @@ export type LoaderImpl = {
     New: () -> (Loader);
     LoadModule: (self: Loader, module: ModuleScript) -> ();
     LoadGame: (self: Loader) -> ();
+    SetupEnvironment: (self: Loader, func: (any) -> (any), moduleName: string?, additional: {[string]: any}?) -> ();
 }
 
 export type Loader = typeof(setmetatable({} :: {

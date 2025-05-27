@@ -9,14 +9,14 @@ local utils = require(shared:WaitForChild("Modules"):WaitForChild("Utils"):WaitF
 local loader = {} :: types.LoaderImpl
 loader.__index = loader
 
-function output(type: 'info' | 'warn' | 'err', message: string)
+function output(type: 'info' | 'warn' | 'err', message: string, module: string?)
     local typeToPrefix = {
         info = "[INFO]",
         warn = "[WARN]",
         err = "[ERROR]"
     }
 
-    local msg = `[CLIENT] - {typeToPrefix[type]}: {message}.`
+    local msg = `[{module or "CLIENT"}] - {typeToPrefix[type]}: {message}.`
     if type == 'info' then
         print(msg)
     else 
@@ -24,10 +24,53 @@ function output(type: 'info' | 'warn' | 'err', message: string)
     end
 end
 
+function loader:SetupEnvironment(func, moduleName, additional)
+    local originalEnvironment = getfenv(func)
+    local environment = {
+        print = function(content: string)
+            output("info", content, moduleName)
+        end;
+
+        warn = function(content: string)
+            output("warn", content, moduleName)
+        end;    
+
+        error = function(content: string)
+            output("err", content, moduleName)
+        end;
+    }
+
+    local metaEnvironment: any = setmetatable({}, {
+        __index = function(_, index)
+            if additional and additional[index] then
+                return additional[index]
+            end
+
+            return environment[index] or originalEnvironment[index]
+        end;
+
+        __newindex = function(_, index, key)
+            originalEnvironment[index] = key
+        end;
+
+        __metatable = {};
+    })
+
+    setfenv(func, metaEnvironment)
+end
+
 function loader:LoadModule(module)
     local success, result = pcall(function()
         local loaded = require(module) :: any
         assert(loaded.New, `Module {module.Name} is missing method .New().`)
+
+        for _, prop in pairs(loaded) do
+            if typeof(prop) ~= "function" then
+                continue
+            end
+            
+            self:SetupEnvironment(prop, module.Name)
+        end
 
         return loaded.New()
     end)
@@ -57,8 +100,8 @@ function loader:LoadGame()
         self:LoadModule(module)
     end
 
-    local loadTime = tick() - startTick
-    output("info", `Client load finished. ({utils.formatDecimal(loadTime, 3)}s)`)
+    self.loadData.time = tick() - startTick
+    output("info", `Client initialized. Loaded {self.loadData.total} modules. ({utils.formatDecimal(self.loadData.time, 3)}s)`)
 end
 
 function loader.New()
