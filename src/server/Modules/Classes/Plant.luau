@@ -2,10 +2,28 @@
 local server = game:GetService("ServerScriptService").Server
 local types = require(server.Types.Plant)
 
-local util = require(server.Modules.Utils.Seed)
+local util = require(server.Modules.Utils.Garden)
 
 local plant = {} :: types.PlantImpl
 plant.__index = plant
+
+function plant:CreateHarvestPrompt(fruitType)
+   local prompt = Instance.new("ProximityPrompt")
+
+   prompt.Name = "HarvestPrompt"
+   prompt.MaxActivationDistance = 10
+   prompt.Style = Enum.ProximityPromptStyle.Custom
+   prompt.RequiresLineOfSight = false
+
+   prompt:SetAttribute("PromptType", "FruitPrompt")
+   prompt:SetAttribute("FruitType", fruitType)
+
+   return prompt
+end
+
+function plant:OnFullyGrown()
+    warn(`Method :OnFullyGrown is not implemeted.`)
+end
 
 function plant:Grow(_)
     warn(`Method :Grow is not implemented`)
@@ -16,13 +34,19 @@ function plant:LoadSaveData(_)
 end
 
 function plant:GetSaveData()
-    warn('Method :GetSaveData() is not implemented')
+    warn('Method :GetSaveData is not implemented')
     return {}
 end
 
-function plant.New(config)
+function plant:Teardown()
+    warn('Method :Teardown is not implemeted')
+end
+
+function plant.New(config, manager, id)
     local self = setmetatable({}, plant)
 
+    self.manager = manager
+    self.id = id
     self.plot = config.plot
 
     self.origin = config.origin
@@ -51,6 +75,10 @@ function plant.New(config)
     self.growthCoroutine = coroutine.create(function()
         while task.wait(self.growthDelay) do
             if not self.isGrowing or self.growthProgress >= 100 then
+                if self.growthProgress >= 100 then
+                    self:OnFullyGrown()
+                end
+
                 coroutine.yield()
             end
 

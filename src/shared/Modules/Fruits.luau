@@ -9,7 +9,7 @@ local fruits = {} :: {[string]: types.PlantData}
 fruits.Carrot = {
     name = "Carrot",
     description = "A regular carrot",
-    rarity = enums.SeedRarities.Rainbow
+    rarity = enums.SeedRarities.Common
 }
 
 return fruits

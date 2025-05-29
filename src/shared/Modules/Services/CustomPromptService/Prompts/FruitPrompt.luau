@@ -24,7 +24,7 @@ function customPrompt:Triggered(_)
     self.UI:WaitForChild("Click"):Play()
     tweenModule.MultiTween(
         self.UI, "Size",
-        UDim2.new(2.8, 0, 0.9, 0), .05,
+        UDim2.new(0, 220, 0, 75), .05,
         Enum.EasingDirection.InOut, Enum.EasingStyle.Sine
     )
 end
@@ -32,7 +32,7 @@ end
 function customPrompt:TriggerEnded(_)
     tweenModule.MultiTween(
         self.UI, "Size",
-        UDim2.new(3, 0, 1, 0), .05,
+        UDim2.new(0, 250, 0, 90), .05,
         Enum.EasingDirection.InOut, Enum.EasingStyle.Sine
     )
 end
@@ -110,7 +110,7 @@ function customPrompt.New(prompt, platform)
 
     tweenModule.MultiTween(
         self.UI, "Size",
-        UDim2.new(3, 0, 1, 0), .2,
+        UDim2.new(0, 250, 0, 90), .2,
         Enum.EasingDirection.InOut, Enum.EasingStyle.Sine
     )
     

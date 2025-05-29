@@ -24,7 +24,7 @@ return function(tool: Tool)
         return
     end
 
-    tool.Name = `{seed.name} (x{tool:GetAttribute("Amount")})`
+    tool.Name = `{seed.name} seed (x{tool:GetAttribute("Amount")})`
     tool.ToolTip = seed.description
 
     tool:GetAttributeChangedSignal("Amount"):Connect(function()

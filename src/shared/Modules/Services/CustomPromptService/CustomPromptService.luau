@@ -96,6 +96,8 @@ function customPrompt.New()
     self.triggerConnection = promptService.PromptTriggered:Connect(self:CreateHandlerWrapper("Triggered"))
     self.triggerEndConnection = promptService.PromptTriggerEnded:Connect(self:CreateHandlerWrapper("TriggerEnded"))
 
+    print("Meow")
+
     return self
 end
 

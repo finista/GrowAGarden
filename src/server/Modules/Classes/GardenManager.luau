@@ -1,4 +1,5 @@
 --!strict
+local httpService game:GetService("HttpService")
 local server = game.ServerScriptService.Server
 
 local types = require(server.Types.GardenManager)
@@ -8,7 +9,6 @@ local remotes = game.ReplicatedStorage:WaitForChild("Remotes")
 local plantsFolder = server.Modules.Plants
 
 local gardenUtils = require(server.Modules.Utils.Garden)
-local seedUtils = require(server.Modules.Utils.Seed)
 local generalUtils = require(server.Modules.Utils.General)
 
 local manager = {} :: types.GardenManagerImpl
@@ -18,12 +18,27 @@ function manager:SetOwner(player)
 	self.owner = player
 end
 
+function manager:RemovePlant(plantId)
+	local plant = self.plants[plantId]
+	if not plant then
+		warn(`Plant with plantId {plantId} doesn't exist.`)
+		return
+	end
+
+	local success, errorMessage = pcall(plant.Teardown, plant)
+	if not success then
+		warn(`Failed to call :Teardown for plant {plantId}, error: {errorMessage or "No error given"}`)
+	end
+
+	self.plants[plantId] = nil
+end
+
 function manager:PlantSeed(seedType, target)
 	if not self.owner then
 		return
 	end
 
-	if not seedUtils.VerifySeedTypeExists(seedType) then
+	if not gardenUtils.verifySeedTypeExists(seedType) then
 		warn(`Seed type {seedType} does not exist.`)
 		return
 	end
@@ -33,7 +48,7 @@ function manager:PlantSeed(seedType, target)
 		return
 	end
 
-	local seedTool = seedUtils.FindSeedByTypeInPlayerInventory(seedType, self.owner)
+	local seedTool = gardenUtils.findSeedByTypeInPlayerInventory(seedType, self.owner)
 	if not seedTool or seedTool:GetAttribute("Amount") <= 0 then
 		warn("Player doesn't have a SeedTool with the given seedType")
 		return
@@ -41,7 +56,7 @@ function manager:PlantSeed(seedType, target)
 
 	local plantPlot = nil
 	for _, plot in pairs((self.plot:FindFirstChild("Plots") :: Folder):GetChildren()) do
-		if gardenUtils.ValidateTarget(plot :: Model, target) then
+		if gardenUtils.validateTarget(plot :: Model, target) then
 			plantPlot = plot
 			break
 		end
@@ -60,13 +75,14 @@ function manager:PlantSeed(seedType, target)
 		end
 	end
 
+	local id = generalUtils.generateRandomString(65)
 	local plantModule = (require(plantsFolder:FindFirstChild(seedType)) :: plantTypes.Plant & any).New({
 		plot = self.plot,
 		origin = target.Position,
 		relativeOffset = generalUtils.getOffsetFromPart(target.Position, plantPlot:FindFirstChild("SeedArea") :: Part),
-	})
+	}, self, id)
 	
-	table.insert(self.plants, plantModule)
+	self.plants[id] = plantModule
 	seedTool:SetAttribute("Amount", (seedTool:GetAttribute("Amount") :: number) - 1)
 
 	remotes:FindFirstChild("EffectService"):WaitForChild("RunEffect"):FireAllClients("Plant", target.Position)
