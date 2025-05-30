@@ -22,7 +22,11 @@ function carrot:OnFullyGrown()
     local prompt = self:CreateHarvestPrompt("Carrot")
     prompt.Parent = (self.model :: Model):FindFirstChild("Base")
 
-    self.data.promptConnection = prompt.Triggered:Connect(function()
+    self.data.promptConnection = prompt.Triggered:Connect(function(player: Player)
+        if player ~= self.manager.owner then
+            return
+        end
+
         local tool = gardenUtils.generateFruitTool(carrotToolPreset, self.size) :: Tool
         tool.Parent = (self.manager.owner :: Player):FindFirstChild("Backpack")
 

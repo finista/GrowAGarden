@@ -106,7 +106,7 @@ function util.generateFruitTool(preset: Tool, size: number): Tool?
     local config = require(module) :: fruitConfig.FruitConfig
     local data = {
         weight = config.weight * size,
-        value = (config.weight * size) * config.costPerKg,
+        value = math.floor((config.weight * size) * config.costPerKg),
         mutated = config.isMutated,
     }
 
