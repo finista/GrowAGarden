@@ -260,7 +260,7 @@ function dialogeService.New()
     self.npcTypewriteThread = nil
 
     self.dialogeRemoteConnection = dialogeEvent.OnClientEvent:Connect(function(presetName: string, npc: Model?)
-        if self.dialogeOpen then
+        if self.dialogeOpen or self.db then
             return
         end
 
@@ -275,6 +275,8 @@ function dialogeService.New()
             warn(`{presetName} is missing .Entrypoint`)
             return
         end
+
+        self.db = true
 
         if npc then
             self:ToggleNPCDialoge(true, npc)
