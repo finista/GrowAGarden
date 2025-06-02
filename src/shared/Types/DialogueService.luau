@@ -1,4 +1,7 @@
-export type DialogeConfig = {[string]: Dialoge}
+export type DialogeConfig = {
+    Entrypoint: Dialoge;
+    [string]: Dialoge;
+}
 
 export type DialogeOption = {
     content: string;

@@ -65,7 +65,7 @@ function carrot.New(config, manager, id)
 	self.seedData = seeds.Carrot
 
     self.growthRate = 1
-    self.growthDelay = 15 / 100
+    self.growthDelay = 1 / 100
 
     local model = storage.Plants.Carrot:Clone()
 	self.model = model
