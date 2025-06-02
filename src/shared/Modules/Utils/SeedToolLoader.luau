@@ -5,7 +5,7 @@ local shared = replicatedStorage:WaitForChild("Shared")
 local seedData = require(shared:WaitForChild("Modules"):WaitForChild("Seeds"))
 
 local remotes = replicatedStorage:WaitForChild("Remotes")
-local plantSeedRemote: RemoteEvent = remotes:WaitForChild("PlantSeed")
+local plantSeedRemote: RemoteEvent = remotes:WaitForChild("Garden"):WaitForChild("PlantSeed")
 
 local player = game:GetService("Players").LocalPlayer
 local mouse = player:GetMouse()

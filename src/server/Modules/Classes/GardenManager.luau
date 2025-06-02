@@ -1,5 +1,4 @@
 --!strict
-local httpService game:GetService("HttpService")
 local server = game.ServerScriptService.Server
 
 local types = require(server.Types.GardenManager)
@@ -97,6 +96,7 @@ function manager.New(plot)
 	self.owner = nil
 
 	self.plantSeedConnection = remotes
+		:WaitForChild("Garden")
 		:WaitForChild("PlantSeed").OnServerEvent
 		:Connect(function(player: Player, seedType: string, target: CFrame)
 			if self.owner ~= player then
