@@ -1,6 +1,6 @@
 --!strict
 local shared = game:GetService("ReplicatedStorage"):WaitForChild("Shared")
-local types = require(shared:WaitForChild("Types"):WaitForChild("Enums"))
+local types = require(shared:WaitForChild("Types"):WaitForChild("General"))
 
 local enums = {}
 

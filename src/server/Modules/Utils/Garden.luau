@@ -1,7 +1,7 @@
 --!strict
 local shared = game.ReplicatedStorage.Shared
 
-local fruitConfig = require(shared.Types.FruitConfig)
+local generalTypes = require(shared.Types.General)
 local seeds = require(shared.Modules.Seeds)
 local generalUtil = require(script.Parent.General)
 
@@ -103,7 +103,7 @@ function util.generateFruitTool(preset: Tool, size: number): Tool?
         return
     end
 
-    local config = require(module) :: fruitConfig.FruitConfig
+    local config = require(module) :: generalTypes.FruitConfig
     local data = {
         weight = config.weight * size,
         value = math.floor((config.weight * size) * config.costPerKg),

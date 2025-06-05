@@ -9,7 +9,13 @@ local seeds = {} :: {[string]: types.SeedData}
 seeds.Carrot = {
     name = "Carrot",
     description = "A regular carrot",
-    rarity = enums.SeedRarities.Common
+    rarity = enums.SeedRarities.Common,
+    shopData = {
+        moneyCost = 20,
+        robuxCost = 5,
+        productID = 0,
+        viewportName = "Carrot"
+    }
 }
 
 return seeds
